@@ -51,7 +51,7 @@ const Dashboard: NextPage = () => {
                   <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
                     Import file
                   </Button>
-                  <Button variant="contained" sx={{ alignSelf: "center" }} onClick={() => router.push("/dashboard")}>
+                  <Button variant="contained" sx={{ alignSelf: "center" }} onClick={() => router.push("/newagreement")}>
                     Create Agreement
                   </Button>
                 </>
