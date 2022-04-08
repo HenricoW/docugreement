@@ -38,7 +38,7 @@ const Home: NextPage = () => {
             </Typography>
             <Typography variant="h5">All while on the Boba Layer 2 Network!.</Typography>
             <Typography variant="h6">Enforce those agreements on Decentralized courts, such as Kleros. </Typography>
-            <Button size="large" variant="contained" onClick={() => {}} sx={{ mt: "3em" }}>
+            <Button size="large" variant="contained" onClick={() => router.push("/dashboard")} sx={{ mt: "3em" }}>
               Start Now
             </Button>
           </Card>
