@@ -1,16 +1,17 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
-import React from "react";
+import React, { useContext } from "react";
 import { shortAddress } from "../../utils/utils";
 import { AppName } from "../../pages/_app";
 import { useRouter } from "next/router";
+import Web3Context from "../../contexts/Web3Context";
 
 // temp
 // const walletAddr = "0x81745b7339D5067E82B93ca6BBAd125F214525d3";
-const walletAddr = "";
 
 const MainNavBar = () => {
   const router = useRouter();
+  const { walletAddr, w3connect } = useContext(Web3Context);
 
   return (
     <>
@@ -24,7 +25,14 @@ const MainNavBar = () => {
       >
         <Container maxWidth="xl">
           <Toolbar>
-            <Box display="flex" alignItems="center" mr="auto" onClick={() => router.push("/")}>
+            <Box
+              display="flex"
+              alignItems="center"
+              pr=".3em"
+              mr="auto"
+              onClick={() => router.push("/")}
+              sx={{ ":hover": { cursor: "pointer" } }}
+            >
               <BlurOnIcon sx={{ fontSize: "2em", margin: "0 auto" }} />
               <Typography align="center" variant="h5" my=".5em" ml=".5em">
                 {AppName}
@@ -33,7 +41,7 @@ const MainNavBar = () => {
             {walletAddr ? (
               <Typography variant="h6">{shortAddress(walletAddr)}</Typography>
             ) : (
-              <Button variant="outlined" color="info" onClick={() => {}}>
+              <Button variant="outlined" color="info" onClick={w3connect}>
                 CONNECT
               </Button>
             )}
