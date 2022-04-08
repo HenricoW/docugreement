@@ -1,17 +1,34 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
-import React, { useContext } from "react";
-import { shortAddress } from "../../utils/utils";
+import React, { useContext, useState } from "react";
+import { bundlrUrl, shortAddress, tokenName } from "../../utils/utils";
 import { AppName } from "../../pages/_app";
 import { useRouter } from "next/router";
 import Web3Context from "../../contexts/Web3Context";
-
-// temp
-// const walletAddr = "0x81745b7339D5067E82B93ca6BBAd125F214525d3";
+import { WebBundlr } from "@bundlr-network/client";
 
 const MainNavBar = () => {
   const router = useRouter();
-  const { walletAddr, w3connect } = useContext(Web3Context);
+  const { walletAddr, w3connect, provider } = useContext(Web3Context);
+  const [bundlr, setBundlr] = useState<WebBundlr>();
+
+  const bundlrConnect = async () => {
+    const _bundlr = new WebBundlr(bundlrUrl, tokenName, provider);
+    _bundlr
+      .ready()
+      .then(() => setBundlr(_bundlr))
+      .catch((err) => console.log(err));
+  };
+
+  const bundlrTest = async () => {
+    let val;
+    try {
+      val = await bundlr?.getPrice(1000);
+      console.log(val);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -38,6 +55,17 @@ const MainNavBar = () => {
                 {AppName}
               </Typography>
             </Box>
+
+            <Button variant="outlined" color="info" onClick={bundlrConnect}>
+              Connect Bundlr
+            </Button>
+
+            {bundlr ? (
+              <Button variant="outlined" color="info" onClick={bundlrTest}>
+                Test Bundlr
+              </Button>
+            ) : null}
+
             {walletAddr ? (
               <Typography variant="h6">{shortAddress(walletAddr)}</Typography>
             ) : (

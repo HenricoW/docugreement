@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 
 const providerOptions = {};
@@ -6,14 +6,17 @@ const providerOptions = {};
 export const getWeb3 = async () => {
   const w3modal = new Web3Modal({ cacheProvider: true, providerOptions });
 
-  let provider;
+  let w3instance;
   try {
-    provider = await w3modal.connect();
+    w3instance = await w3modal.connect();
   } catch (err: any) {
     throw new Error(err);
   }
 
-  const web3 = new Web3(provider);
+  const provider = new ethers.providers.Web3Provider(w3instance);
+  await provider.send("eth_requestAccounts", []);
 
-  return { web3, provider };
+  const signer = provider.getSigner();
+
+  return { provider, signer, w3instance: w3instance as ethers.providers.Web3Provider };
 };
