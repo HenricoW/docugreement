@@ -21,6 +21,16 @@ export const formatBytes = (bytes: number | string, decimals = 2) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 };
 
+export const toDecimals = (num: string, dec: number = 3) => {
+  if (num.includes(".")) {
+    const [integer, fraction] = num.split(".");
+    const shortened = fraction.slice(0, dec);
+    return [integer, shortened].join(".");
+  }
+
+  return num;
+};
+
 export const bundlrUrl = "https://devnet.bundlr.network";
 export const tokenName = "matic";
 export const tokenAddr = "";
