@@ -6,12 +6,10 @@ import React, { useContext, useEffect, useState } from "react";
 import SideMenu from "../components/Navbars/SideMenu";
 import Web3Context from "../contexts/Web3Context";
 import { WebBundlr } from "@bundlr-network/client";
-import { bundlrUrl, capatalize, formatBytes, shortAddress, toDecimals, tokenName } from "../utils/utils";
+import { bundlrUrl, capatalize, shortAddress, formatBytes, one_mb } from "../utils/utils";
+import { requiredChainID, requiredChainName, toDecimals, tokenName } from "../utils/utils";
 import { AppName } from "./_app";
-
-const requiredChainID = 137;
-const requiredChainName = "Polygon";
-const one_mb = 1024 ** 2;
+import { ethers } from "ethers";
 
 const Account: NextPage = () => {
   const { walletAddr, provider, chainId } = useContext(Web3Context);
@@ -19,9 +17,8 @@ const Account: NextPage = () => {
   const [bundlr_bal, setBundlr_bal] = useState("0");
   const [dataSize, setDataSize] = useState(one_mb);
   const [costEstimate, setCostEstimate] = useState("0");
-
-  console.log("chainId: ", chainId);
-  console.log("chainId: ", parseInt(chainId.toString()));
+  const [depVal, setDepVal] = useState("0");
+  const [withdVal, setWithdVal] = useState("0");
 
   // TODO: move to own context
   const bundlrConnect = async () => {
@@ -32,7 +29,7 @@ const Account: NextPage = () => {
       .catch((err) => console.log(err));
   };
 
-  const bundlrTest = async (size: number) => {
+  const bundlrEstimate = async (size: number) => {
     let val;
     try {
       val = await bundlr?.getPrice(size);
@@ -40,6 +37,24 @@ const Account: NextPage = () => {
       setCostEstimate(val?.toString() || "0");
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleFund = async () => {
+    if (bundlr) {
+      const val = ethers.utils.parseEther(depVal);
+      console.log("deposit value: ", val.toString());
+      bundlr
+        .fund(val.toString())
+        .then((resp) => {
+          console.log(resp);
+          return bundlr.getLoadedBalance();
+        })
+        .then((balVal) => {
+          const load_bal = bundlr.utils.unitConverter(balVal);
+          setBundlr_bal(load_bal.toString());
+        })
+        .catch((err) => console.log(err));
     }
   };
   // end: move to context
@@ -101,13 +116,10 @@ const Account: NextPage = () => {
                   <>
                     {bundlr ? (
                       <>
-                        {/* <Button variant="outlined" color="info" onClick={bundlrTest}>
-                          Test Bundlr
-                        </Button> */}
                         <Typography variant="body2" fontSize="h6.fontSize">
                           Your bundler balance: {bundlr_bal} {capatalize(tokenName)}
                         </Typography>
-                        <Box mb="2em">
+                        <Box mb="2em" className="deposit_funds">
                           <Typography color="text.secondary" mt="1em">
                             Fund your account:
                           </Typography>
@@ -117,12 +129,14 @@ const Account: NextPage = () => {
                             fullWidth
                             //   label={`Amount of ${capatalize(tokenName)}`}
                             variant="outlined"
+                            value={depVal}
+                            onChange={(e) => setDepVal(e.target.value)}
                           />
-                          <Button variant="outlined" color="info" onClick={() => {}}>
+                          <Button variant="outlined" color="info" onClick={handleFund}>
                             Fund Account
                           </Button>
                         </Box>
-                        <Box mb="2em">
+                        <Box mb="2em" className="withdraw_funds">
                           <Typography color="text.secondary" mt="1em">
                             Withdraw from account:
                           </Typography>
@@ -132,12 +146,14 @@ const Account: NextPage = () => {
                             fullWidth
                             //   label={`Amount of ${capatalize(tokenName)}`}
                             variant="outlined"
+                            value={withdVal}
+                            onChange={(e) => setWithdVal(e.target.value)}
                           />
                           <Button variant="outlined" color="info" onClick={() => {}}>
                             Withdraw
                           </Button>
                         </Box>
-                        <Box mb="2em" textAlign="center">
+                        <Box mb="2em" textAlign="center" className="cost_estimate">
                           <Typography color="text.secondary" mb=".5em">
                             Estimate the cost per file size:
                           </Typography>
@@ -154,7 +170,7 @@ const Account: NextPage = () => {
                           <Typography my=".5em">
                             Estimated cost: {toDecimals(costEstimate, 5)} {capatalize(tokenName)}
                           </Typography>
-                          <Button variant="outlined" color="info" onClick={() => bundlrTest(dataSize)}>
+                          <Button variant="outlined" color="info" onClick={() => bundlrEstimate(dataSize)}>
                             Get estimate
                           </Button>
                         </Box>
