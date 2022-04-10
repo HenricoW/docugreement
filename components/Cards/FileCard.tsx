@@ -1,12 +1,9 @@
 import { Box, Card, CardContent, Divider, Theme, Typography } from "@mui/material";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import React from "react";
+import { formatBytes } from "../../utils/utils";
 
 // temp
-const name = "";
-const size = "";
-const formatBytes = (s: string) => s;
-const created = "";
 const errorMessage = "";
 // end temp
 
@@ -21,12 +18,12 @@ const FileCard = ({ name, size, created }: FileCardProps) => {
     <Card
       variant="outlined"
       sx={{
-        p: ".5em",
+        px: ".5em",
         background: "rgba(0, 0, 0, 0.45)",
         backdropFilter: "blur(20px)",
         borderColor: "info.main",
         borderRadius: "1em",
-        minWidth: "280px",
+        width: "300px",
         "&:hover": {
           cursor: "pointer",
           boxShadow: (theme: Theme) => "0 0 1em " + theme.palette.info.main,
