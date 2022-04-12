@@ -1,22 +1,50 @@
 import { Box, Button, CardContent, Theme } from "@mui/material";
 import { Card, Typography, Step, StepContent, StepLabel, Stepper } from "@mui/material";
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useContext, useRef, useState } from "react";
+import BundlrContext from "../../contexts/BundlrContext";
+import Web3Context from "../../contexts/Web3Context";
+import { AppName } from "../../pages/_app";
+import { allowedFileType } from "../../utils/utils";
 import AgreementStepsForm from "../Forms/AgreementStepsForm";
 
-// temp
-const uploadResponse = "";
-const walletAddr = "0x81745b7339D5067E82B93ca6BBAd125F214525d3";
-const busyMssg = "Please wait";
-// end temp
+const uploadResponse = ""; // ==========================> TODO: Upload message logic
+// const busyMssg = "Please wait";
 
 const NewAgreementCard = () => {
   const [role, setRole] = useState("Contractor");
   const [fileName, setFileName] = useState("");
   const [activeStep, setActiveStep] = useState(0);
 
+  const { bundlr } = useContext(BundlrContext);
+  const { walletAddr } = useContext(Web3Context);
+
   const uploadRef = useRef<HTMLInputElement>(null);
-  const handleUpload = (e: FormEvent<HTMLFormElement>) => {
+
+  const handleUpload = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const files = uploadRef.current?.files;
+    let reader = new FileReader();
+    const tags = [
+      { name: "Content-Type", value: allowedFileType },
+      { name: "App-Name", value: AppName },
+    ];
+
+    if (files && files.length > 0) {
+      reader.onload = async function () {
+        if (reader.result) {
+          const fileBuffer = Buffer.from(reader.result as ArrayBuffer);
+
+          const tx = bundlr?.createTransaction(fileBuffer, { tags });
+          await tx?.sign();
+          console.log("Transaction ID: ", tx?.id);
+
+          const resp = await tx?.upload();
+          console.log("resp: ", resp);
+        }
+      };
+      reader.readAsArrayBuffer(files[0]);
+    }
   };
 
   const stepsContent = AgreementStepsForm({
@@ -27,6 +55,7 @@ const NewAgreementCard = () => {
     fileName,
     setFileName,
     handleUpload,
+    allowedFileType,
     uploadRef,
   });
 
