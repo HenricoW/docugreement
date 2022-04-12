@@ -10,16 +10,17 @@ interface FileCardProps {
   name: string;
   size: string;
   created: string;
+  id: string;
 }
 
-const FileCard = ({ name, size, created }: FileCardProps) => {
+const FileCard = ({ name, size, created, id }: FileCardProps) => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const { setFiles } = useContext(FileContext);
 
   const fetchFile = () => {
-    downloadFile()
+    downloadFile(id)
       .then((blob) => {
         const newBlob = new Blob([blob], { type: "application/pdf" });
         const newFile = new File([newBlob], name, { type: newBlob.type });
