@@ -12,8 +12,8 @@ import { ethers } from "ethers";
 import BundlrContext from "../contexts/BundlrContext";
 
 const Account: NextPage = () => {
-  const { walletAddr, provider, chainId } = useContext(Web3Context);
-  const { bundlr, bundlrConnect, bundlrEstimate } = useContext(BundlrContext);
+  const { walletAddr, chainId } = useContext(Web3Context);
+  const { bundlr, bundlrEstimate } = useContext(BundlrContext);
 
   const [bundlr_bal, setBundlr_bal] = useState("0");
   const [dataSize, setDataSize] = useState(one_mb);
@@ -166,9 +166,9 @@ const Account: NextPage = () => {
                         </Box>
                       </>
                     ) : (
-                      <Button variant="outlined" color="info" onClick={() => bundlrConnect(provider)}>
-                        Connect Bundlr
-                      </Button>
+                      <Typography variant="body2" color="orange" fontSize="h6.fontSize">
+                        Please connect to Bundlr
+                      </Typography>
                     )}
                   </>
                 ) : (

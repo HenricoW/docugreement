@@ -1,14 +1,16 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
 import React, { useContext } from "react";
-import { shortAddress } from "../../utils/utils";
+import { requiredChainID, requiredChainName, shortAddress } from "../../utils/utils";
 import { AppName } from "../../pages/_app";
 import { useRouter } from "next/router";
 import Web3Context from "../../contexts/Web3Context";
+import BundlrContext from "../../contexts/BundlrContext";
 
 const MainNavBar = () => {
   const router = useRouter();
-  const { walletAddr, w3connect } = useContext(Web3Context);
+  const { walletAddr, w3connect, provider, chainId } = useContext(Web3Context);
+  const { bundlr, bundlrConnect } = useContext(BundlrContext);
 
   return (
     <>
@@ -36,13 +38,31 @@ const MainNavBar = () => {
               </Typography>
             </Box>
 
-            {walletAddr ? (
-              <Typography variant="h6">{shortAddress(walletAddr)}</Typography>
-            ) : (
-              <Button variant="outlined" color="info" onClick={w3connect}>
-                CONNECT
+            {bundlr ? (
+              <Button variant="outlined" color="success">
+                Bundlr Active
               </Button>
-            )}
+            ) : provider ? (
+              parseInt(chainId.toString()) === requiredChainID ? (
+                <Button variant="outlined" color="warning" onClick={() => bundlrConnect(provider)}>
+                  Connect to Bundlr
+                </Button>
+              ) : (
+                <Typography variant="body2" color="orange" fontSize="h6.fontSize">
+                  Please switch your wallet to the {requiredChainName} network
+                </Typography>
+              )
+            ) : null}
+
+            <Box ml="1em">
+              {walletAddr ? (
+                <Typography variant="h6">{shortAddress(walletAddr)}</Typography>
+              ) : (
+                <Button variant="outlined" color="info" onClick={w3connect}>
+                  CONNECT
+                </Button>
+              )}
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
