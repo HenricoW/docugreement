@@ -10,8 +10,8 @@ const NewAgreement: NextPage = () => {
   return (
     <>
       <Head>
-        <title>{AppName} | Dashboard</title>
-        <meta name="description" content="View your agreements" />
+        <title>{AppName} | New Agreement</title>
+        <meta name="description" content="Add a new agreement" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

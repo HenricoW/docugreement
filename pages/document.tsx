@@ -78,6 +78,8 @@ const Document: NextPage = () => {
         const tags = [
           { name: "Content-Type", value: allowedFileType },
           { name: "App-Name", value: AppName },
+          { name: "dg_fname", value: files[0].fileName },
+          { name: "dg_date", value: (Date.now() / 1000).toString() },
         ];
         return uploadBuffer(Buffer.from(fileBuffer), tags);
       })

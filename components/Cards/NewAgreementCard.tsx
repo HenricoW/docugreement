@@ -4,7 +4,7 @@ import React, { FormEvent, useContext, useRef, useState } from "react";
 import BundlrContext from "../../contexts/BundlrContext";
 import Web3Context from "../../contexts/Web3Context";
 import { AppName } from "../../pages/_app";
-import { allowedFileType } from "../../utils/utils";
+import { allowedFileType, createPdfMetadata } from "../../utils/utils";
 import AgreementStepsForm from "../Forms/AgreementStepsForm";
 
 const uploadResponse = ""; // ==========================> TODO: Upload message logic
@@ -15,7 +15,7 @@ const NewAgreementCard = () => {
   const [fileName, setFileName] = useState("");
   const [activeStep, setActiveStep] = useState(0);
 
-  const { bundlr } = useContext(BundlrContext);
+  const { bundlr, uploadBuffer } = useContext(BundlrContext);
   const { walletAddr } = useContext(Web3Context);
 
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -25,25 +25,30 @@ const NewAgreementCard = () => {
 
     const files = uploadRef.current?.files;
     let reader = new FileReader();
-    const tags = [
-      { name: "Content-Type", value: allowedFileType },
-      { name: "App-Name", value: AppName },
-    ];
 
     if (files && files.length > 0) {
+      const tags = [
+        { name: "Content-Type", value: allowedFileType },
+        { name: "App-Name", value: AppName },
+        { name: "dg_fname", value: files[0].name },
+        { name: "dg_date", value: (Date.now() / 1000).toString() },
+      ];
+
       reader.onload = async function () {
         if (reader.result) {
           const fileBuffer = Buffer.from(reader.result as ArrayBuffer);
 
-          const tx = bundlr?.createTransaction(fileBuffer, { tags });
-          await tx?.sign();
-          console.log("Transaction ID: ", tx?.id);
-
-          const resp = await tx?.upload();
-          console.log("resp: ", resp);
+          await uploadBuffer(fileBuffer, tags);
         }
       };
-      reader.readAsArrayBuffer(files[0]);
+
+      createPdfMetadata(files[0], { ethAddr: walletAddr, role })
+        .then((file) => {
+          reader.readAsArrayBuffer(file);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
