@@ -7,6 +7,7 @@ import { Web3Provider } from "../contexts/Web3Context";
 import { BundlrProvider } from "../contexts/BundlrContext";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { argql } from "../utils/utils";
+import { FileProvider } from "../contexts/fileContext";
 
 export const AppName = "DocuGree";
 
@@ -32,8 +33,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ApolloProvider client={apolloClient}>
           <Web3Provider>
             <BundlrProvider>
-              <MainNavBar />
-              <Component {...pageProps} />
+              <FileProvider>
+                <MainNavBar />
+                <Component {...pageProps} />
+              </FileProvider>
             </BundlrProvider>
           </Web3Provider>
         </ApolloProvider>
