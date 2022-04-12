@@ -17,7 +17,7 @@ const FileCard = ({ name, size, created, id }: FileCardProps) => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const { setFiles } = useContext(FileContext);
+  const { setCurrFiles } = useContext(FileContext);
 
   const fetchFile = () => {
     downloadFile(id)
@@ -25,7 +25,7 @@ const FileCard = ({ name, size, created, id }: FileCardProps) => {
         const newBlob = new Blob([blob], { type: "application/pdf" });
         const newFile = new File([newBlob], name, { type: newBlob.type });
 
-        setFiles([{ fileName: name, file: newFile }]);
+        setCurrFiles([{ fileName: name, file: newFile, id }]);
         router.push("/document");
       })
       .catch((err) => {

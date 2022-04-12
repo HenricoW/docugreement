@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+import FileContext, { FileListData } from "../../contexts/fileContext";
 import Web3Context from "../../contexts/Web3Context";
 import { AppName } from "../../pages/_app";
 import FileCard from "../Cards/FileCard";
@@ -10,8 +11,9 @@ const no_results = 6;
 
 const FilesViewer = () => {
   const { walletAddr } = useContext(Web3Context);
+  const { fileList, setFileList } = useContext(FileContext);
 
-  const get_sribe = gql`
+  const get_files = gql`
   {
     transactions(
       tags: [{ name: "App-Name", values: ["${AppName}"] }],
@@ -50,12 +52,20 @@ const FilesViewer = () => {
     }
   }
 `;
-  const { loading, error, data } = useQuery(get_sribe);
+  const { loading, error, data } = useQuery(get_files);
+
+  useEffect(() => {
+    const fileListSt = localStorage.getItem(`${AppName}_ufl`) || "[]";
+    const filesJson: FileListData[] = JSON.parse(fileListSt);
+
+    setFileList(filesJson);
+    console.log("local file list: ", filesJson);
+  }, []);
 
   if (loading) return <h3>Loading...</h3>;
   if (error) return <h3>Error fetching data</h3>;
 
-  const fileList = data.transactions.edges.map((edge: any) => {
+  const theFileList = data.transactions.edges.map((edge: any) => {
     const nametag = edge.node.tags.filter((tag: any) => tag.name === "dg_fname");
     const name = nametag.length > 0 ? nametag[0].value : "No file name";
 

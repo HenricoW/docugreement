@@ -3,11 +3,22 @@ import { FC, ReactNode, createContext, useState } from "react";
 interface FileData {
   fileName: string;
   file: File;
+  id: string;
+}
+
+export interface FileListData {
+  name: string;
+  size: string;
+  id: string;
+  creation_time: string;
+  type: string;
 }
 
 interface FileContext {
-  files: FileData[];
-  setFiles: (files: FileData[]) => void;
+  currFiles: FileData[];
+  setCurrFiles: (currFiles: FileData[]) => void;
+  fileList: FileListData[];
+  setFileList: (fileList: FileListData[]) => void;
 }
 
 interface FileContextProps {
@@ -15,20 +26,25 @@ interface FileContextProps {
 }
 
 const FileContextDefaultValues: FileContext = {
-  files: [],
-  setFiles: (files: FileData[]) => {},
+  currFiles: [],
+  setCurrFiles: (currFiles: FileData[]) => {},
+  fileList: [],
+  setFileList: (fileList: FileListData[]) => {},
 };
 
 const FileContext = createContext<FileContext>(FileContextDefaultValues);
 
 const FileProvider: FC<FileContextProps> = ({ children }) => {
-  const [files, setFiles] = useState<FileData[]>([]);
+  const [currFiles, setCurrFiles] = useState<FileData[]>([]);
+  const [fileList, setFileList] = useState<FileListData[]>([]);
 
   return (
     <FileContext.Provider
       value={{
-        files,
-        setFiles,
+        currFiles,
+        setCurrFiles,
+        fileList,
+        setFileList,
       }}
     >
       {children}
