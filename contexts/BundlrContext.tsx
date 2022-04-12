@@ -1,5 +1,6 @@
 import { WebBundlr } from "@bundlr-network/client";
 import { FC, ReactNode, createContext, useState } from "react";
+import { postUpload } from "../utils/bundlr-utils";
 import { bundlrUrl, tokenName } from "../utils/utils";
 
 interface BundlrContext {
@@ -8,6 +9,7 @@ interface BundlrContext {
   bundlrEstimate: (size: number) => Promise<string>;
   uploadBuffer: (
     fileBuffer: Buffer,
+    fileName: string,
     tags: {
       name: string;
       value: string;
@@ -25,6 +27,7 @@ const BundlrContextDefaultValues: BundlrContext = {
   bundlrEstimate: async (size: number) => "",
   uploadBuffer: async (
     fileBuffer: Buffer,
+    fileName: string,
     tags: {
       name: string;
       value: string;
@@ -58,21 +61,28 @@ const BundlrProvider: FC<BundlrContextProps> = ({ children }) => {
     }
   };
 
-  const uploadBuffer = async (fileBuffer: Buffer, tags: { name: string; value: string }[]) => {
+  const uploadBuffer = async (fileBuffer: Buffer, fileName: string, tags: { name: string; value: string }[]) => {
     if (bundlr) {
-      try {
-        const tx = bundlr.createTransaction(fileBuffer, { tags });
-        await tx.sign();
-        console.log("Transaction ID: ", tx.id);
+      const tx = bundlr.createTransaction(fileBuffer, { tags });
 
-        const resp = await tx.upload();
-        console.log("upload resp : ", resp);
+      tx.sign()
+        .then(() => {
+          console.log("Transaction ID: ", tx.id);
+          return tx.upload();
+        })
+        .then((resp: any) => {
+          console.log("upload resp : ", resp);
+          console.log("Transaction ID 2: ", tx.id);
 
-        return tx.id;
-      } catch (err) {
-        console.log("Upload file error: ", err);
-        return "";
-      }
+          const fileTemp = new File([fileBuffer], fileName);
+          postUpload(fileTemp, tx.id);
+
+          return tx.id;
+        })
+        .catch((err) => {
+          console.log("Upload file error: ", err);
+          return "";
+        });
     }
 
     return "";
