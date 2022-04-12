@@ -1,11 +1,10 @@
 import { Box, Card, CardContent, Divider, Theme, Typography } from "@mui/material";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { formatBytes } from "../../utils/utils";
-
-// temp
-const errorMessage = "";
-// end temp
+import { downloadFile } from "../../utils/bundlr-utils";
+import { useRouter } from "next/router";
+import FileContext from "../../contexts/fileContext";
 
 interface FileCardProps {
   name: string;
@@ -14,6 +13,25 @@ interface FileCardProps {
 }
 
 const FileCard = ({ name, size, created }: FileCardProps) => {
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
+
+  const { setFiles } = useContext(FileContext);
+
+  const fetchFile = () => {
+    downloadFile()
+      .then((blob) => {
+        const newBlob = new Blob([blob], { type: "application/pdf" });
+        const newFile = new File([newBlob], name, { type: newBlob.type });
+
+        setFiles([{ fileName: name, file: newFile }]);
+        router.push("/document");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Card
       variant="outlined"
@@ -30,7 +48,7 @@ const FileCard = ({ name, size, created }: FileCardProps) => {
           background: "rgba(0, 0, 0, 0.65)",
         },
       }}
-      onClick={() => {}}
+      onClick={() => fetchFile()}
     >
       <CardContent sx={{ ":last-child": { pb: "16px" } }}>
         <InsertDriveFileIcon sx={{ fontSize: "4em", mb: "20px", color: "lightgray" }} />
