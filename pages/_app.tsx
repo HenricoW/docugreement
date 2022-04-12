@@ -4,8 +4,16 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import MainNavBar from "../components/Navbars/MainNavBar";
 import { Web3Provider } from "../contexts/Web3Context";
+import { BundlrProvider } from "../contexts/BundlrContext";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { argql } from "../utils/utils";
 
 export const AppName = "DocuGree";
+
+const apolloClient = new ApolloClient({
+  uri: argql,
+  cache: new InMemoryCache(),
+});
 
 const darkTheme = createTheme({
   palette: {
@@ -21,10 +29,14 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <ThemeProvider theme={darkTheme}>
-        <Web3Provider>
-          <MainNavBar />
-          <Component {...pageProps} />
-        </Web3Provider>
+        <ApolloProvider client={apolloClient}>
+          <Web3Provider>
+            <BundlrProvider>
+              <MainNavBar />
+              <Component {...pageProps} />
+            </BundlrProvider>
+          </Web3Provider>
+        </ApolloProvider>
       </ThemeProvider>
     </>
   );

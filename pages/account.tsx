@@ -5,36 +5,26 @@ import Head from "next/head";
 import React, { useContext, useEffect, useState } from "react";
 import SideMenu from "../components/Navbars/SideMenu";
 import Web3Context from "../contexts/Web3Context";
-import { WebBundlr } from "@bundlr-network/client";
-import { bundlrUrl, capatalize, shortAddress, formatBytes, one_mb } from "../utils/utils";
+import { capatalize, shortAddress, formatBytes, one_mb } from "../utils/utils";
 import { requiredChainID, requiredChainName, toDecimals, tokenName } from "../utils/utils";
 import { AppName } from "./_app";
 import { ethers } from "ethers";
+import BundlrContext from "../contexts/BundlrContext";
 
 const Account: NextPage = () => {
   const { walletAddr, provider, chainId } = useContext(Web3Context);
-  const [bundlr, setBundlr] = useState<WebBundlr>();
+  const { bundlr, bundlrConnect, bundlrEstimate } = useContext(BundlrContext);
+
   const [bundlr_bal, setBundlr_bal] = useState("0");
   const [dataSize, setDataSize] = useState(one_mb);
   const [costEstimate, setCostEstimate] = useState("0");
   const [depVal, setDepVal] = useState("0");
   const [withdVal, setWithdVal] = useState("0");
 
-  // TODO: move to own context
-  const bundlrConnect = async () => {
-    const _bundlr = new WebBundlr(bundlrUrl, tokenName, provider);
-    _bundlr
-      .ready()
-      .then(() => setBundlr(_bundlr))
-      .catch((err) => console.log(err));
-  };
-
-  const bundlrEstimate = async (size: number) => {
-    let val;
+  const getBundlrEstimate = async (size: number) => {
     try {
-      val = await bundlr?.getPrice(size);
-      val = bundlr?.utils.unitConverter(val || 0);
-      setCostEstimate(val?.toString() || "0");
+      const est = await bundlrEstimate(size);
+      setCostEstimate(est);
     } catch (err) {
       console.log(err);
     }
@@ -170,13 +160,13 @@ const Account: NextPage = () => {
                           <Typography my=".5em">
                             Estimated cost: {toDecimals(costEstimate, 5)} {capatalize(tokenName)}
                           </Typography>
-                          <Button variant="outlined" color="info" onClick={() => bundlrEstimate(dataSize)}>
+                          <Button variant="outlined" color="info" onClick={() => getBundlrEstimate(dataSize)}>
                             Get estimate
                           </Button>
                         </Box>
                       </>
                     ) : (
-                      <Button variant="outlined" color="info" onClick={bundlrConnect}>
+                      <Button variant="outlined" color="info" onClick={() => bundlrConnect(provider)}>
                         Connect Bundlr
                       </Button>
                     )}
