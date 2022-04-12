@@ -10,15 +10,16 @@ import { allowedFileType, DocPhase, getMetadata, signPdf } from "../utils/utils"
 import { useRouter } from "next/router";
 import BundlrContext from "../contexts/BundlrContext";
 import { PDFDocument } from "pdf-lib";
+import ShareFileModal from "../components/Modals/ShareFileModal";
 
 const Document: NextPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [pdfURL, setPdfURL] = useState("");
   const [showSign, setShowSign] = useState(true);
   const [showShare, setShowShare] = useState(false);
-  const [dlLink, setDlLink] = useState("");
   const [busyMssg, setBusyMssg] = useState("Please wait");
   const [pendingOpen, setPendingOpen] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const { walletAddr, provider } = useContext(Web3Context);
   const { currFiles } = useContext(FileContext);
@@ -44,7 +45,6 @@ const Document: NextPage = () => {
     (async () => {
       if (currFiles.length > 0) {
         const metaData = await getMData();
-        setDlLink(URL.createObjectURL(currFiles[0].file));
 
         if (metaData.includes(DocPhase.signed1) || metaData.includes(DocPhase.signed2)) setShowShare(true);
         if (metaData.includes(DocPhase.signed2)) {
@@ -93,10 +93,6 @@ const Document: NextPage = () => {
         setErrorMessage("There was a problem signing the document: " + err);
       });
   };
-
-  const onShare = async () => {};
-
-  //   const onPublish = () => {};
 
   return (
     <>
@@ -157,17 +153,25 @@ const Document: NextPage = () => {
                 )}
               </Box>
             ) : null}
+            {showShare ? (
+              <Box textAlign="center">
+                <Typography fontSize="h5.fontSize" mb=".5em">
+                  Share this document
+                </Typography>
+
+                <Button variant="contained" onClick={() => setShowShareModal(true)}>
+                  SHARE
+                </Button>
+              </Box>
+            ) : null}
           </Box>
         </Box>
       </Box>
-      {/*<ShareFileModal
+      <ShareFileModal
         fileRef={currFiles[0].id}
         modalOpen={showShareModal}
         handleModalClose={() => setShowShareModal(false)}
       />
-       {files.length > 0 ? (
-        <PublishModal file={files[0].file} modalOpen={showPubModal} handleModalClose={() => setShowPubModal(false)} />
-      ) : null} */}
       <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={pendingOpen}>
         <Typography mr="2em">{busyMssg}</Typography>
         <CircularProgress color="inherit" />
