@@ -10,25 +10,31 @@ interface AgreementStepsFormProps {
   fileName: string;
   setFileName: (val: string) => void;
   handleUpload: (e: FormEvent<HTMLFormElement>) => void;
+  allowedFileType: string;
   uploadRef: React.RefObject<HTMLInputElement>;
 }
 
 const AgreementStepsForm = (props: AgreementStepsFormProps) => {
-  const { walletAddr, role, setRole, uploadResponse } = props;
+  const { walletAddr, role, setRole, uploadResponse, allowedFileType } = props;
   const { fileName, setFileName, handleUpload, uploadRef } = props;
 
   const stepContent = [
     {
-      label: "Select your account",
+      label: "Connect your wallet",
       body: (
         <Typography>
-          In Metamask (your browser wallet), select the account you would like to associate with this agreement.
+          In Metamask (your browser wallet), select the account you would like to associate with this agreement. Then
+          &quot;Connect&quot; to this app.
         </Typography>
       ),
     },
     {
-      label: "Connect your wallet",
-      body: <Typography>Click on &quot;Connect&quot; in the top-right of this page to connect your wallet.</Typography>,
+      label: "Connect to Bundlr",
+      body: (
+        <Typography>
+          Connect to Bundlr by clicking on &quot;Connect to Bundlr&quot; in the top-right of this page.
+        </Typography>
+      ),
     },
     {
       label: "Your role",
@@ -70,7 +76,7 @@ const AgreementStepsForm = (props: AgreementStepsFormProps) => {
               <label htmlFor="upload-btn" style={{ textAlign: "center" }}>
                 <input
                   type="file"
-                  accept="application/pdf"
+                  accept={allowedFileType}
                   id="upload-btn"
                   name="upload"
                   ref={uploadRef}

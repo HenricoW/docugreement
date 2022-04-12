@@ -36,9 +36,13 @@ const Home: NextPage = () => {
             <Typography variant="h5">
               Manage your files on Arweave and sign escrow agreement contracts with your Ethereum wallet.
             </Typography>
-            <Typography variant="h5">All while on the Boba Layer 2 Network!.</Typography>
-            <Typography variant="h6">Enforce those agreements on Decentralized courts, such as Kleros. </Typography>
-            <Button size="large" variant="contained" onClick={() => router.push("/dashboard")} sx={{ mt: "3em" }}>
+            <Typography variant="h5" my=".5em">
+              All while on the Boba Layer 2 Network!.
+            </Typography>
+            <Typography variant="h6" mt="1.5em">
+              Enforce those agreements on Decentralized courts, such as Kleros.{" "}
+            </Typography>
+            <Button size="large" variant="contained" onClick={() => router.push("/dashboard")} sx={{ mt: "2em" }}>
               Start Now
             </Button>
           </Card>

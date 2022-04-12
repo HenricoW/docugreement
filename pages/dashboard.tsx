@@ -2,21 +2,29 @@ import { Box, Button, Typography } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useContext } from "react";
 import FilesViewer from "../components/Layouts/FilesViewer";
 import SideMenu from "../components/Navbars/SideMenu";
+import FileContext from "../contexts/fileContext";
+import Web3Context from "../contexts/Web3Context";
+import { shortAddress } from "../utils/utils";
 import { AppName } from "./_app";
 
 // temp
-const address = "0x81745b7339D5067E82B93ca6BBAd125F214525d3";
-const user = "Ricky Bobby";
-const projPodAvailable = true;
 const fetchDirsAndFiles = async (isTrue: boolean) => {};
-const setShowImport = async (isTrue: boolean) => {};
+// const setShowImport = async (isTrue: boolean) => {};
 // end temp
 
 const Dashboard: NextPage = () => {
+  const { walletAddr } = useContext(Web3Context);
+  const { fileList } = useContext(FileContext);
+
   const router = useRouter();
+
+  // const readFileList = () => {
+  //   const fileListSt = localStorage.getItem(`${AppName}_ufl`) || "[]"
+  // }
+
   return (
     <>
       <Head>
@@ -31,7 +39,7 @@ const Dashboard: NextPage = () => {
           <Box display="flex" justifyContent="space-between" mt="1em">
             <Box ml=".5em">
               <Box fontWeight="fontWeightLight" fontSize="h4.fontSize" className="title">
-                {AppName} documents for {user}
+                {walletAddr ? `${AppName}ments for ${shortAddress(walletAddr, 6)}` : "Please Connect"}
               </Box>
 
               <Typography variant="body2" color="text.secondary" fontSize="h6.fontSize">
@@ -39,7 +47,7 @@ const Dashboard: NextPage = () => {
               </Typography>
             </Box>
             <Box display="flex" gap="1em" className="dashboard-header">
-              {projPodAvailable ? (
+              {fileList.length > 0 ? (
                 <>
                   <Button
                     variant="outlined"
@@ -48,14 +56,14 @@ const Dashboard: NextPage = () => {
                   >
                     Refresh File Listing
                   </Button>
-                  <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
-                    Import file
-                  </Button>
-                  <Button variant="contained" sx={{ alignSelf: "center" }} onClick={() => router.push("/newagreement")}>
-                    Create Agreement
-                  </Button>
                 </>
               ) : null}
+              {/* <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
+                Import file
+              </Button> */}
+              <Button variant="contained" sx={{ alignSelf: "center" }} onClick={() => router.push("/newagreement")}>
+                Create Agreement
+              </Button>
             </Box>
           </Box>
 
