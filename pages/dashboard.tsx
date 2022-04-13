@@ -2,8 +2,9 @@ import { Box, Button, Typography } from "@mui/material";
 import { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import FilesViewer from "../components/Layouts/FilesViewer";
+import ImportModal from "../components/Modals/ImportModal";
 import SideMenu from "../components/Navbars/SideMenu";
 import FileContext from "../contexts/fileContext";
 import Web3Context from "../contexts/Web3Context";
@@ -16,6 +17,7 @@ const fetchDirsAndFiles = async (isTrue: boolean) => {};
 // end temp
 
 const Dashboard: NextPage = () => {
+  const [showImport, setShowImport] = useState(false);
   const { walletAddr } = useContext(Web3Context);
   const { fileList } = useContext(FileContext);
 
@@ -58,9 +60,9 @@ const Dashboard: NextPage = () => {
                   </Button>
                 </>
               ) : null}
-              {/* <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
+              <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
                 Import file
-              </Button> */}
+              </Button>
               <Button variant="contained" sx={{ alignSelf: "center" }} onClick={() => router.push("/newagreement")}>
                 Create Agreement
               </Button>
@@ -72,6 +74,7 @@ const Dashboard: NextPage = () => {
           </Box>
         </Box>
       </Box>
+      <ImportModal modalOpen={showImport} handleModalClose={() => setShowImport(false)} />
     </>
   );
 };
