@@ -168,6 +168,7 @@ const Document: NextPage = () => {
         </Box>
       </Box>
       <ShareFileModal
+        fname={currFiles[0].fileName}
         fileRef={currFiles[0].id}
         modalOpen={showShareModal}
         handleModalClose={() => setShowShareModal(false)}
