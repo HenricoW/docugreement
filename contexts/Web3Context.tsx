@@ -43,6 +43,7 @@ const Web3Provider: FC<Web3ContextProps> = ({ children }) => {
       const W3Objects = await getWeb3();
       _provider = W3Objects.provider;
       _w3inst = W3Objects.w3instance;
+      setChainId((await _provider.getNetwork()).chainId);
       const userAccounts = await _provider.send("eth_requestAccounts", []);
 
       setProvider(_provider);

@@ -31,6 +31,7 @@ const NewAgreementCard = () => {
         { name: "Content-Type", value: allowedFileType },
         { name: "App-Name", value: AppName },
         { name: "dg_fname", value: files[0].name },
+        { name: "dg_fsize", value: files[0].size.toString() },
         { name: "dg_date", value: (Date.now() / 1000).toString() },
       ];
 
@@ -38,7 +39,7 @@ const NewAgreementCard = () => {
         if (reader.result) {
           const fileBuffer = Buffer.from(reader.result as ArrayBuffer);
 
-          await uploadBuffer(fileBuffer, tags);
+          await uploadBuffer(fileBuffer, files[0].name, tags);
         }
       };
 
@@ -97,7 +98,7 @@ const NewAgreementCard = () => {
                         variant="contained"
                         onClick={() => setActiveStep((step) => step + 1)}
                         sx={{ mt: 1, mr: 1 }}
-                        disabled={walletAddr ? false : index === 2}
+                        disabled={(walletAddr ? false : index === 2) || (bundlr ? false : index === 1)}
                       >
                         {index === stepsContent.length - 1 ? "Finish" : "Continue"}
                       </Button>
