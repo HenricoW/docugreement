@@ -4,6 +4,7 @@ import { LoadingButton } from "@mui/lab";
 import { downloadFile, postUpload } from "../../utils/bundlr-utils";
 import { useRouter } from "next/router";
 import FileContext from "../../contexts/fileContext";
+import Web3Context from "../../contexts/Web3Context";
 
 interface ImportModalProps {
   modalOpen: boolean;
@@ -17,6 +18,7 @@ const ImportModal = ({ modalOpen, handleModalClose }: ImportModalProps) => {
   const router = useRouter();
 
   const { setCurrFiles } = useContext(FileContext);
+  const { walletAddr } = useContext(Web3Context);
 
   const onImport = async () => {
     setLoading(true);
@@ -29,7 +31,7 @@ const ImportModal = ({ modalOpen, handleModalClose }: ImportModalProps) => {
         const newFile = new File([newBlob], name, { type: newBlob.type });
 
         setCurrFiles([{ fileName: name, file: newFile, id }]);
-        postUpload(newFile, id);
+        postUpload(newFile, id, walletAddr);
         router.push("/document");
       })
       .catch((err) => {

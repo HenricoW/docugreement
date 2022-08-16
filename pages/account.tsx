@@ -5,8 +5,8 @@ import Head from "next/head";
 import React, { useContext, useEffect, useState } from "react";
 import SideMenu from "../components/Navbars/SideMenu";
 import Web3Context from "../contexts/Web3Context";
-import { capatalize, shortAddress, formatBytes, one_mb } from "../utils/utils";
-import { requiredChainID, requiredChainName, toDecimals, tokenName } from "../utils/utils";
+import { capatalize, shortAddress, formatBytes, one_mb, chainData } from "../utils/utils";
+import { toDecimals } from "../utils/utils";
 import { AppName } from "./_app";
 import { ethers } from "ethers";
 import BundlrContext from "../contexts/BundlrContext";
@@ -102,12 +102,12 @@ const Account: NextPage = () => {
               }}
             >
               {walletAddr ? (
-                parseInt(chainId.toString()) === requiredChainID ? (
+                chainData.hasOwnProperty(chainId.toString()) ? (
                   <>
                     {bundlr ? (
                       <>
                         <Typography variant="body2" fontSize="h6.fontSize">
-                          Your bundler balance: {bundlr_bal} {capatalize(tokenName)}
+                          Your bundler balance: {bundlr_bal} {capatalize(chainData[chainId.toString()].tokenName)}
                         </Typography>
                         <Box mb="2em" className="deposit_funds">
                           <Typography color="text.secondary" mt="1em">
@@ -158,7 +158,8 @@ const Account: NextPage = () => {
                             <ToggleButton value={100 * one_mb}>{formatBytes(100 * one_mb)}</ToggleButton>
                           </ToggleButtonGroup>
                           <Typography my=".5em">
-                            Estimated cost: {toDecimals(costEstimate, 5)} {capatalize(tokenName)}
+                            Estimated cost: {toDecimals(costEstimate, 5)}{" "}
+                            {capatalize(chainData[chainId.toString()].tokenName)}
                           </Typography>
                           <Button variant="outlined" color="info" onClick={() => getBundlrEstimate(dataSize)}>
                             Get estimate
@@ -173,7 +174,7 @@ const Account: NextPage = () => {
                   </>
                 ) : (
                   <Typography variant="body2" color="orange" fontSize="h6.fontSize">
-                    Please switch your wallet to the {requiredChainName} network
+                    Please switch your wallet to Boba/Polygon Mainnet/Testnet
                   </Typography>
                 )
               ) : (

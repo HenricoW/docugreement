@@ -1,7 +1,7 @@
 import { AppBar, Box, Button, Container, Toolbar, Typography } from "@mui/material";
 import BlurOnIcon from "@mui/icons-material/BlurOn";
 import React, { useContext } from "react";
-import { requiredChainID, requiredChainName, shortAddress } from "../../utils/utils";
+import { chainData, shortAddress } from "../../utils/utils";
 import { AppName } from "../../pages/_app";
 import { useRouter } from "next/router";
 import Web3Context from "../../contexts/Web3Context";
@@ -43,13 +43,13 @@ const MainNavBar = () => {
                 Bundlr Active
               </Button>
             ) : provider ? (
-              parseInt(chainId.toString()) === requiredChainID ? (
-                <Button variant="outlined" color="warning" onClick={() => bundlrConnect(provider)}>
+              chainData.hasOwnProperty(chainId.toString()) ? (
+                <Button variant="outlined" color="warning" onClick={() => bundlrConnect(provider, chainId)}>
                   Connect to Bundlr
                 </Button>
               ) : (
                 <Typography variant="body2" color="orange" fontSize="h6.fontSize">
-                  Please switch your wallet to the {requiredChainName} network
+                  Please switch your wallet to Boba/Polygon Mainnet/Testnet
                 </Typography>
               )
             ) : null}

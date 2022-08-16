@@ -39,7 +39,7 @@ const NewAgreementCard = () => {
         if (reader.result) {
           const fileBuffer = Buffer.from(reader.result as ArrayBuffer);
 
-          await uploadBuffer(fileBuffer, files[0].name, tags);
+          await uploadBuffer(fileBuffer, files[0].name, walletAddr, tags);
         }
       };
 

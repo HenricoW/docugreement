@@ -83,7 +83,7 @@ const Document: NextPage = () => {
           { name: "dg_fsize", value: newPdf.size.toString() },
           { name: "dg_date", value: (newPdf.lastModified / 1000).toString() },
         ];
-        return uploadBuffer(Buffer.from(fileBuffer), newPdf.name, tags);
+        return uploadBuffer(Buffer.from(fileBuffer), newPdf.name, walletAddr, tags);
       })
       .then((id) => {
         setErrorMessage(id ? "Sign & upload successful" : "");

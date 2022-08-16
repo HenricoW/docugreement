@@ -55,7 +55,7 @@ const FilesViewer = () => {
   const { loading, error, data } = useQuery(get_files);
 
   useEffect(() => {
-    const fileListSt = localStorage.getItem(`${AppName}_ufl`) || "[]";
+    const fileListSt = localStorage.getItem(`${AppName}_ufl-${walletAddr}`) || "[]";
     const filesJson: FileListData[] = JSON.parse(fileListSt);
 
     setFileList(filesJson);
