@@ -6,26 +6,15 @@ import React, { useContext, useState } from "react";
 import FilesViewer from "../components/Layouts/FilesViewer";
 import ImportModal from "../components/Modals/ImportModal";
 import SideMenu from "../components/Navbars/SideMenu";
-import FileContext from "../contexts/fileContext";
 import Web3Context from "../contexts/Web3Context";
 import { shortAddress } from "../utils/utils";
 import { AppName } from "./_app";
 
-// temp
-const fetchDirsAndFiles = async (isTrue: boolean) => {};
-// const setShowImport = async (isTrue: boolean) => {};
-// end temp
-
 const Dashboard: NextPage = () => {
   const [showImport, setShowImport] = useState(false);
   const { walletAddr } = useContext(Web3Context);
-  const { fileList } = useContext(FileContext);
 
   const router = useRouter();
-
-  // const readFileList = () => {
-  //   const fileListSt = localStorage.getItem(`${AppName}_ufl`) || "[]"
-  // }
 
   return (
     <>
@@ -49,17 +38,6 @@ const Dashboard: NextPage = () => {
               </Typography>
             </Box>
             <Box display="flex" gap="1em" className="dashboard-header">
-              {fileList.length > 0 ? (
-                <>
-                  <Button
-                    variant="outlined"
-                    sx={{ alignSelf: "center" }}
-                    onClick={async () => await fetchDirsAndFiles(true)}
-                  >
-                    Refresh File Listing
-                  </Button>
-                </>
-              ) : null}
               <Button variant="outlined" sx={{ alignSelf: "center" }} onClick={() => setShowImport(true)}>
                 Import file
               </Button>

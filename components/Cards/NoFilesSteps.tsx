@@ -13,7 +13,7 @@ const stepContent = [
       Permanent Decentralized storage
     </Typography>
     <Typography variant="h6" mb="1em" color="text.secondary">
-      Make your documents unstoppable! DocuGree uses Arweave's low rates to pay for storage.
+      Make your documents unstoppable! DocuGree uses Arweave&apos;s low rates to pay for storage.
     </Typography>
     <Typography variant="h6" mb="1em" color="text.secondary">
       DocuGree helps you manage these files, with a focus on PDF agreements signed with your Web3 wallet.
@@ -74,7 +74,7 @@ export default function NoFilesSteps() {
               After completing the steps you can upload a pdf by clicking &quot;Create Agreement&quot;.
             </Typography>
             <Typography variant="h3" my=".5em" color="green">
-              Let's Go!
+              Let&apos;s Go!
             </Typography>
           </>
           <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>

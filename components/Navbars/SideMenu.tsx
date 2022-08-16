@@ -46,19 +46,19 @@ const SideMenu = () => {
               </Typography>
             </Box>
           </MenuItem>
-          <MenuItem onClick={onLogout}>
-            <Box m="0 auto" display="flex" flexDirection="column" alignItems="center">
-              <LogoutIcon sx={{ fontSize: "2.5em", margin: "0 auto" }} />
-              <Typography align="center" variant="h6" my=".5em">
-                Sign out
-              </Typography>
-            </Box>
-          </MenuItem>
           <MenuItem onClick={() => router.push("/account")}>
             <Box m="0 auto" display="flex" flexDirection="column" alignItems="center">
               <DashboardIcon sx={{ fontSize: "2.5em", margin: "0 auto" }} />
               <Typography align="center" variant="h6" my=".5em">
                 My Account
+              </Typography>
+            </Box>
+          </MenuItem>
+          <MenuItem onClick={onLogout}>
+            <Box m="0 auto" display="flex" flexDirection="column" alignItems="center">
+              <LogoutIcon sx={{ fontSize: "2.5em", margin: "0 auto" }} />
+              <Typography align="center" variant="h6" my=".5em">
+                Sign out
               </Typography>
             </Box>
           </MenuItem>
